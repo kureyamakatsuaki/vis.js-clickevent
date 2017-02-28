@@ -1,5 +1,5 @@
 Copyright (c) 2017 Katsuaki Kureyama
-http://wisdommingle.com/
+https://kureyama-guitar.com/
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
