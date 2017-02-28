@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <meta name="viewport" content="width=device-width" />
+  <link href="./lib/default/default.css" rel="stylesheet" type="text/css" />
+
+  <title>Get Click For HyperLink</title>
+
+</head>
+<body>
+<article>
+<h3 id="h"></h3>
+<p>Value is <span id="span"></span> <p>
+</article>
+<script>
+var hArea = document.getElementById("h");
+var spanArea = document.getElementById("span");
+ function getQuery(){
+    var vars = {time:[]}
+    var max = 0;
+    var hash = "";
+    var url = window.location.search;
+    
+    hash  = url.slice(1).split('&');
+    max = hash.length;
+ 
+   var values = []; 
+    for (var i = 0; i < max; i++) {
+        var array = hash[i].split('=');
+             values.push(array[1]);
+         }
+    return values; 
+   }
+
+var values =  getQuery();
+
+var key = values[0]; 
+var value = values[1];
+
+hArea.innerHTML = key;
+spanArea.innerHTML = value;
+
+
+</script>
+</body>

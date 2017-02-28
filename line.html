@@ -1,0 +1,160 @@
+
+<!DOCTYPE HTML>
+<html>
+<!--
+create by katsuaki kureyama.
+ -->
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <meta name="viewport" content="width=device-width" />
+  <title>Get Click Event</title>
+
+  <script src="./lib/vis/js/vis.min.js"></script>
+
+  <link href="./lib/vis/css/vis.min.css" rel="stylesheet" type="text/css" />
+  <link href="./lib/default/default.css" rel="stylesheet" type="text/css" />
+
+</head>
+<style>
+/* style */
+ .style {
+      fill: #4648B8;
+      fill-opacity:0;
+      stroke-width:2px;
+      stroke:#272672;
+    }
+
+</style>
+<body>
+<article>
+<h2>Get Click Event</h2>
+<p>
+this sample is <br> 
+you can get click event for each of data from click position.<br>
+if you click , you will go another page .
+
+</p>
+<div id="visualization" style="width:100%;height:100%;"></div>
+</article>
+<script>
+// test module 
+
+  function printProperties(obj) {
+    var properties = '';
+    for (var prop in obj){
+        properties += prop + "=" + obj[prop] + "\n";
+    }
+    alert(properties);
+}
+
+timeListJSON= '{"timelist":[{"time_stamp":"2016-10-01 17:00:53","value":"19"},{"time_stamp":"2016-10-01 20:24:19","value":"19"},{"time_stamp":"2016-10-02 23:47:45","value":"19"},{"time_stamp":"2016-10-03 21:47:11","value":"19"},{"time_stamp":"2016-10-04 06:34:37","value":"29"},{"time_stamp":"2016-10-04 09:58:03","value":"29"},{"time_stamp":"2016-10-05 13:21:29","value":"61"},{"time_stamp":"2016-10-05 16:44:55","value":"95"},{"time_stamp":"2016-10-06 06:18:39","value":"26"}]}';
+</script>
+
+<script>
+//utilitys 
+
+ function keyGenerator(date){
+   var d = new Date( date );
+ 	 return d.getFullYear() +"-"+ (d.getMonth() + 1) +"-"+d.getDate();
+  }
+function exchangeToGraphParm(list){
+	var parms = new Array();
+	for(key in list){
+	  parms.push({ x: key , y: list[key], group: 0,label:key});		
+	};
+  return parms;
+}
+
+function getViewStart(parms){	return parms[0]['x'] ; }
+function getViewEnd(parms){	 return parms[parms.length-1]['x']; }
+
+</script>
+  
+  <script>
+ // create general datas
+ 
+  var  timelist =  JSON.parse(timeListJSON)['timelist'];  
+
+  timeList = [];
+  timelist.forEach(  function( elm,index,array ){
+         var key = keyGenerator(elm['time_stamp']);
+         timeList[key] = elm['value'];
+} );
+ 
+</script>
+
+<script>
+// vis js 
+
+  var container = document.getElementById('visualization'); 
+  var parms = exchangeToGraphParm( timeList );    
+  var dataset = new vis.DataSet(parms);
+
+ var groups = new vis.DataSet();
+  groups.add({
+    id: 0,
+    content: 'timelist',
+    className: 'style',
+    options: {
+      drawPoints: {
+        style: 'square' // square, circle
+      },
+      shaded: {
+        orientation: 'bottom' // top, bottom
+      }  
+    }});
+ var options = {
+    start: getViewStart(parms)
+    ,end: getViewEnd(parms)
+    ,max: getViewEnd(parms)
+    ,min: getViewStart(parms)
+    ,format:{
+ minorLabels: {
+    millisecond:'SSS',
+    second:     's',
+    minute:     'HH:mm',
+    hour:       'HH:mm',
+    weekday:    'M月D日 （ddd）',
+    day:        'D',
+    month:      'M月',
+    year:       'YYYY年'
+  }
+,majorLabels: {
+    millisecond:'YYYY年 M月 D日',
+    second:     'YYYY年 M月 D日',
+    minute:     'YYYY年 M月 D日',
+    hour:       'YYYY年 M月 D日',
+    weekday:    'YYYY年 M月',
+    day:        'YYYY年 M月',
+    month:      'YYYY年',
+    year:       ''
+  }
+}
+,showMajorLabels:true
+,showMinorLabels:true
+   };
+   
+  // if you need ,you can over ride time format . 
+  vis.moment.lang('ja', {
+  	weekdays: ["日曜日","月曜日","火曜日","水曜日","木曜日","金曜日","土曜日"]
+    ,weekdaysShort: ["日","月","火","水","木","金","土"]
+
+});
+    var graph2d = new vis.Graph2d(container, dataset, groups , options);
+ </script>
+ 
+ 
+ <script>
+ //get click event
+   graph2d.on("click", function (params) {
+       var key = (keyGenerator(params['time']));
+       var value = timeList[key];
+       var param = "?key="+key+"&value="+value;
+          window.location.href = "./detail.html"+param;
+     
+     });
+ 
+</script>
+</body>
+</html>
